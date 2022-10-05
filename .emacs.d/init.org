@@ -1,0 +1,593 @@
+#+TITLE: Emacs Configuration via Org-mode
+#+AUTHOR: Mario Baars
+
+* Decluttering
+** UI-Decluttering
+#+begin_src emacs-lisp :tangle init.el
+(setq inhibit-start-up-message 1)
+(tool-bar-mode -1)
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
+#+end_src
+
+** Undo
+#+begin_src emacs-lisp :tangle init.el 
+(setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
+#+end_src
+
+** Saves Directory
+#+begin_src emacs-lisp :tangle init.el 
+(setq backup-directory-alist '((".*" . "~/.emacs.d/.emacs_saves")))
+#+end_src
+
+** Keeping Emacs clean
+#+begin_src emacs-lisp :tangle init.el 
+  (setq delete-old-versions t)
+  (setq version-control t)
+  (setq vc-make-backup-files t)
+  (setq create-lockfiles nil)
+#+end_src
+
+** Custom File
+#+begin_src emacs-lisp :tangle init.el 
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(when (file-exists-p custom-file)
+  (load custom-file))
+#+end_src
+
+* Use Package
+#+begin_src emacs-lisp :tangle init.el
+(require 'package)
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+                         ("org" . "https://orgmode.org/elpa/")
+			     ("elpa" . "https://elpa.gnu.org/packages/")))
+
+(package-initialize)
+(unless package-archive-contents
+    (package-refresh-contents))
+
+(unless (package-installed-p 'use-package)
+    (package-install 'use-package))
+
+(require 'use-package)
+(setq use-package-always-ensure 't)
+#+end_src
+
+* Misc
+** Which Key
+#+begin_src emacs-lisp :tangle init.el 
+  (use-package which-key
+    :init (which-key-mode)
+    :diminish which-key-mode
+    :config
+    (setq which-key-idle-delay 1)
+    (setq which-key-min-display-lines 3))
+#+end_src
+
+** Stay keyboard driven
+#+begin_src emacs-lisp :tangle init.el
+(setq use-dialog-box nil)
+#+end_src
+
+** Line numbers
+#+begin_src emacs-lisp :tangle init.el 
+  (global-display-line-numbers-mode t)
+  (setq display-line-numbers 'relative)
+#+end_src
+
+** Spaces instead of tabs
+#+begin_src emacs-lisp :tangle init.el 
+  (setq default-tab-width 4)
+  (setq-default indent-tabs-mode nil)
+#+end_src
+
+** Electric pair mode
+#+begin_src emacs-lisp :tangle init.el 
+(electric-pair-mode t)
+(setq-default electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit)
+#+end_src
+
+** Disable auto indenting
+#+begin_src emacs-lisp :tangle init.el
+(when (fboundp 'electric-indent-mode) (electric-indent-mode -1))
+#+end_src
+
+** Scrolling
+#+begin_src emacs-lisp :tangle init.el 
+(setq auto-window-vscroll nil)
+(customize-set-variable 'fast-but-imprecise-scrolling t)
+(customize-set-variable 'scroll-conservatively 101)
+(customize-set-variable 'scroll-margin 0)
+(customize-set-variable 'scroll-preserve-screen-position t)
+#+end_src
+
+** Recentf
+#+begin_src emacs-lisp :tangle init.el
+  (recentf-mode 1)
+#+end_src
+
+** Save-hist
+#+begin_src emacs-lisp :tangle init.el
+  (setq history-length 25)
+  (savehist-mode 1)
+#+end_src
+
+** Short answers
+#+begin_src emacs-lisp :tangle init.el 
+(if (boundp 'use-short-answers)
+    (setq use-short-answers t)
+  (advice-add 'yes-or-no-p :overide #'y-or-n-p))
+#+end_src
+
+** Reverting buffers
+#+begin_src emacs-lisp :tangle init.el 
+(customize-set-variable 'global-auto-revert-non-file-buffers t)
+(global-auto-revert-mode 1)
+#+end_src
+
+** Docview
+#+begin_src emacs-lisp :tangle init.el 
+(setq doc-view-resolution 200) 
+#+end_src
+
+** Winner mode
+#+begin_src emacs-lisp :tangle init.el
+(winner-mode t)
+#+end_src
+
+** Compilation
+#+begin_src emacs-lisp :tangle init.el
+(setq compilation-scroll-output t)
+#+end_src
+
+** Easy closing *Help*
+#+begin_src emacs-lisp :tangle init.el
+  (setq help-window-select t)
+#+end_src
+
+* Key bindings
+** Window manipulation
+#+begin_src emacs-lisp :tangle init.el
+  (global-set-key (kbd "C-S-h") 'windmove-swap-states-left)
+  (global-set-key (kbd "C-S-j") 'windmove-swap-states-down)
+  (global-set-key (kbd "C-S-k") 'windmove-swap-states-up)
+  (global-set-key (kbd "C-S-l") 'windmove-swap-states-right)
+
+  (global-set-key (kbd "s-h") 'windmove-left)
+  (global-set-key (kbd "s-j") 'windmove-down)
+  (global-set-key (kbd "s-k") 'windmove-up)
+  (global-set-key (kbd "s-l") 'windmove-right)
+
+  (global-set-key (kbd "C-s-j") (lambda() (interactive) (shrink-window-horizontally 8)))
+  (global-set-key (kbd "C-s-k") (lambda() (interactive) (enlarge-window-horizontally 8)))
+  (global-set-key (kbd "C-s-+") (lambda() (interactive) (enlarge-window 4)))
+  (global-set-key (kbd "C-s--") (lambda() (interactive) (shrink-window 4)))
+#+end_src
+
+** Random Keybindings
+#+begin_src emacs-lisp :tangle init.el
+  (global-set-key (kbd "M-n") 'dabbrev-expand)
+  (global-set-key (kbd "C-x d") 'ido-dired)
+  (global-set-key (kbd "C-x C-f") 'ido-find-file)
+  (global-set-key (kbd "C-x c") 'compile)
+#+end_src
+
+** No accidental quiting
+#+begin_src emacs-lisp :tangle init.el
+(global-unset-key "\C-x\C-c")
+#+end_src
+
+* Evil Mode
+#+begin_src emacs-lisp :tangle init.el 
+(use-package evil
+    :ensure t
+    :init
+    (setq evil-want-keybinding nil)
+    :config
+    (evil-mode t))
+
+(use-package evil-collection
+    :after evil
+    :ensure t
+    :config
+    (evil-collection-init))
+#+end_src
+
+** Undo-Tree
+Evil mode needs undo-tree for undo capability
+#+begin_src emacs-lisp :tangle init.el
+  (use-package undo-tree)
+  (global-undo-tree-mode t)
+  (setq evil-undo-system 'undo-tree)
+#+end_src
+
+* Extending Path
+#+begin_src emacs-lisp :tangle init.el 
+(setq exec-path (append exec-path '("/home/mario/.local/bin")))
+#+end_src
+
+* Appearance
+** Font
+#+begin_src emacs-lisp :tangle init.el 
+  (defvar default-font-size 200)
+
+  (defun set-font-faces()
+    (set-face-attribute 'default nil :font "Ubuntu Mono" :weight 'light :height default-font-size)
+    (set-face-attribute 'fixed-pitch nil :font "Ubuntu Mono" :weight 'light :height default-font-size)
+    (set-face-attribute 'variable-pitch nil :font "Source Sans Pro" :weight 'normal :height default-font-size))
+
+  (if (daemonp)
+      (add-hook 'after-make-frame-functions
+		(lambda (frame)
+		  (setq doom-modeline-icon t)
+		  (with-selected-frame frame
+		    (set-font-faces))))
+    (set-font-faces))
+#+end_src
+
+** Theme
+#+begin_src emacs-lisp :tangle init.el 
+(use-package doom-themes)
+(load-theme 'doom-tokyo-night)
+#+end_src
+
+** Modeline
+#+begin_src emacs-lisp :tangle init.el 
+  (use-package doom-modeline
+  :init (doom-modeline-mode 1)
+  :custom ((doom-modeline-height 18)))
+
+  (add-hook 'after-init-hook 'doom-modeline-mode)
+
+  ;; doom-modeline configuration
+  (customize-set-variable 'doom-modeline-height 15)
+  (customize-set-variable 'doom-modeline-bar-width 6)
+  (customize-set-variable 'doom-modeline-minor-modes nil)
+  (customize-set-variable 'doom-modeline-buffer-file-name-style 'truncate-except-project)
+
+  (use-package all-the-icons)
+
+  (setq display-time-day-and-date t)
+  (display-time-mode 1)
+  (setq display-time-24hr-format t)
+#+end_src
+
+* Counsel
+#+begin_src emacs-lisp :tangle init.el
+  (use-package counsel
+    :ensure t
+    :custom
+    (counsel-linux-app-format-function #'counsel-linux-app-format-function-command-only)
+    :bind  
+    (("M-s f" . 'counsel-fzf)))
+#+end_src
+
+* Consult
+#+begin_src emacs-lisp :tangle init.el
+  (use-package consult
+    :bind
+    (("C-x b" . consult-buffer)
+     ("C-x C-b" . consult-buffer)
+     ;; M-s bindings (search-map)
+     ("M-s d" . consult-find)
+     ("M-s D" . consult-locate)
+     ("M-s g" . consult-grep)
+     ("M-s G" . consult-git-grep)
+     ("M-s r" . consult-ripgrep)
+     ("M-s l" . consult-line)
+     ("M-s L" . consult-line-multi)
+     ("M-s m" . consult-multi-occur)
+     ("M-s k" . consult-keep-lines)
+     ("M-s u" . consult-focus-lines)))
+#+end_src
+
+* Completion
+** Company
+#+begin_src emacs-lisp :tangle init.el
+  (use-package company)
+  (global-company-mode t)
+#+end_src
+
+** Vertico 
+#+begin_src emacs-lisp :tangle init.el
+  (use-package vertico
+    :ensure t
+    :init
+    (vertico-mode)
+    (setq vertico-cycle t))
+
+  (use-package savehist
+    :ensure t
+    :init
+    (savehist-mode))
+#+end_src
+
+** Orderless
+#+begin_src emacs-lisp :tangle init.el
+  (use-package orderless
+    :init
+    (setq completion-styles '(orderless flex basic)
+          completion-category-defaults nil
+          completion-category-overrides '((file (styles partial-completion)))))
+#+end_src
+
+** Marginalia
+#+begin_src emacs-lisp :tangle init.el
+(use-package marginalia
+  :ensure t
+  :config
+  (marginalia-mode))
+#+end_src
+
+** Completion Style
+#+begin_src emacs-lisp :tangle init.el
+(setq completion-styles '(orderless))
+#+end_src
+
+** Corfu
+#+begin_src emacs-lisp :tangle init.el
+  (use-package corfu)
+  (global-corfu-mode t)
+#+end_src
+
+* Dired
+#+begin_src emacs-lisp :tangle init.el
+  (use-package diredfl :ensure t
+    :config
+    (add-hook 'dired-mode-hook 'diredfl-mode))
+
+  (setq dired-listing-switches "-alh1vGB --group-directories-first")
+
+  ;; Dired plus
+  (add-to-list 'load-path "~/.emacs.d/dired+.el")
+#+end_src
+
+* Org mode
+** Basic Org mode setup
+#+begin_src emacs-lisp :tangle init.el 
+  (defun org-mode-setup ()
+    (org-indent-mode)
+    (visual-line-mode 1))
+
+  (defun org-font-setup ()
+    ;; (font-lock-add-keywords 'org-mode
+    ;; 			  '((" *\\([-]\\) "
+    ;; 			     (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+    (font-lock-add-keywords 'org-mode
+                            '(("^ *\\(-->\\) "
+                               (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "→")))))))
+
+  (use-package org
+    :hook (org-mode . org-mode-setup)
+    :config
+    (setq org-agenda-files '("~/OrgFiles/CDS.org"
+                             "~/OrgFiles/Termine.org"))
+    (org-font-setup))
+
+  (setq org-agenda-sorting-strategy '((agenda habit-down time-up ts-up
+                                              priority-down category-keep)
+                                      (todo priority-down category-keep)
+                                      (tags priority-down category-keep)
+                                      (search category-keep)))
+  (define-skeleton org-skeleton
+    "Header info for a emacs-org file."
+    "Title: "
+    "#+TITLE:" str " \n"
+    "#+AUTHOR: Your Name\n"
+    )
+  (global-set-key [C-c o s] 'org-skeleton)
+
+  (use-package org-bullets
+    :after org
+    :hook (org-mode . org-bullets-mode)
+    :custom
+    (org-bullets-bullet-list '("○" "●" "○" "●" "○" "●" "○")))
+
+  ;; Better src-blocks in org mode
+  (with-eval-after-load 'org
+    (require 'org-tempo)
+    (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+    (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp :tangle init.el"))
+    (add-to-list 'org-structure-template-alist '("py" . "src python")))
+#+end_src
+
+* Vterm
+#+begin_src emacs-lisp :tangle init.el
+(use-package vterm)
+(use-package multi-vterm)
+#+end_src
+
+* Tramp
+#+begin_src emacs-lisp :tangle init.el
+(require 'tramp)
+(setq tramp-default-method "ssh")
+#+end_src
+
+* Fuzzyfinder
+#+begin_src emacs-lisp :tangle init.el
+  (use-package fzf
+    :bind
+    :config
+    (setq fzf/args "-x --color bw --print-query --margin=1,0 --no-hscroll"
+          fzf/executable "fzf"
+          fzf/git-grep-args "-i --line-number %s"
+          ;; command used for `fzf-grep-*` functions
+          ;; example usage for ripgrep:
+          fzf/grep-command "rg --no-heading -nH"
+          ;; fzf/grep-command "grep -nrH"
+          ;; If nil, the fzf buffer will appear at the top of the window
+          fzf/position-bottom t
+          fzf/window-height 10))
+#+end_src
+
+* Embark
+#+begin_src emacs-lisp :tangle init.el
+  (use-package embark
+    :ensure t
+    :bind
+    (("s-." . embark-act)         ;; pick some comfortable binding
+     ("s-;" . embark-dwim)        ;; good alternative: M-.
+     ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
+    :init
+    (setq prefix-help-command #'embark-prefix-help-command)
+    :config
+    (add-to-list 'display-buffer-alist
+                 '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                   nil
+                   (window-parameters (mode-line-format . none)))))
+
+  (use-package embark-consult
+    :ensure t
+    :after (embark consult)
+    :demand t 
+    :hook
+    (embark-collect-mode . consult-preview-at-point-mode))
+#+end_src
+
+* EXWM
+#+begin_src emacs-lisp :tangle init.el 
+  (start-process-shell-command "xrandr" nil "")
+
+  (use-package counsel
+    ;; EXWM easy app launching
+    :custom
+    (counsel-linux-app-format-function #'counsel-linux-app-format-function-command-only))
+
+  (use-package exwm
+    :config
+    ;; Set the default number of workspaces
+    (setq exwm-workspace-number 10)
+
+    ;; When window "class" updates, use it to set the buffer name
+    ;; (add-hook 'exwm-update-class-hook #'efs/exwm-update-class)
+
+    ;; These keys should always pass through to Emacs
+    (setq exwm-input-prefix-keys
+          '(?\C-x
+            ?\C-u
+            ?\C-h
+            ?\M-x
+            ?\M-`
+            ?\M-&
+            ?\M-:
+            ?\C-\M-j  ;; Buffer list
+            ?\C-\ ))  ;; Ctrl+Space
+
+    ;; Ctrl+Q will enable the next key to be sent directly
+    (define-key exwm-mode-map (kbd "C-q") 'exwm-input-send-next-key)
+
+    ;; Set up global key bindings.  These always work, no matter the input state!
+    ;; Keep in mind that changing this list after EXWM initializes has no effect.
+    (setq exwm-input-global-keys
+          `(
+            ([?\s-p] . exwm-reset)
+
+            ;; Launch applications via shell command
+            ([?\s-&] . (lambda (command)
+                         (interactive (list (read-shell-command "$ ")))
+                         (start-process-shell-command command nil command)))
+
+            ;; Switch workspace
+            ([?\s-w] . exwm-workspace-switch)
+
+            ;; 's-N': Switch to certain workspace with Super (Win) plus a number key (0 - 9)
+            ,@(mapcar (lambda (i)
+                        `(,(kbd (format "s-%d" i)) .
+                          (lambda ()
+                            (interactive)
+                            (exwm-workspace-switch-create ,i))))
+                      (number-sequence 0 9))))
+
+    (exwm-enable))
+
+  ;; Make buffer name more meaningful
+  (add-hook 'exwm-update-class-hook
+            (lambda ()
+              (exwm-workspace-rename-buffer exwm-class-name)))
+
+  (exwm-input-set-key (kbd "s-SPC") 'counsel-linux-app)
+
+  (setq exwm-workspace-show-all-buffers 1)
+  (setq exwm-layout-show-all-buffers t)
+#+end_src
+
+* Text Editing
+** flycheck
+#+begin_src emacs-lisp :tangle init.el
+  (use-package flycheck)
+  (global-flycheck-mode 1)
+#+end_src
+
+** lsp-mode
+#+begin_src emacs-lisp :tangle init.el
+  (use-package lsp-ui
+    :ensure
+    :commands lsp-ui-mode
+    :custom
+    (lsp-ui-peek-always-show t)
+    (lsp-ui-sideline-show-hover t)
+    (lsp-ui-doc-enable nil))
+
+  (use-package lsp-mode
+    :ensure t
+    :commands lsp
+    :custom
+    (lsp-eldoc-render-all t)
+    (lsp-idle-delay 0.6)
+    :hook ((lsp-mode . lsp-enable-which-key-integration))
+    )
+#+end_src
+
+** projectile
+#+begin_src emacs-lisp :tangle init.el
+  (use-package projectile
+    :ensure t
+    :bind
+    :config
+    (define-key 
+      projectile-mode-map
+      (kbd "C-c p")
+      'projectile-command-map))
+#+end_src
+
+** Eldoc
+#+begin_src emacs-lisp :tangle init.el
+  (setq eldoc-echo-area-prefer-doc-buffer t)
+  (global-eldoc-mode 1)
+#+end_src
+
+** Languages
+*** Latex
+#+begin_src emacs-lisp :tangle init.el 
+(use-package latex
+  :ensure auctex
+  :config
+  (setq TeX-auto-save t)
+  (setq TeX-parse-self t))
+
+(setq-default TeX-master nil)
+(setq TeX-show-compilation nil)
+(use-package company-auctex)
+(use-package auto-complete-auctex)
+#+end_src>
+
+*** Rust
+#+begin_src emacs-lisp :tangle init.el
+  (use-package rust-mode
+    :ensure t)
+  (setq lsp-rust-analyzer-cargo-watch-command "clippy")
+#+end_src
+
+*** ESS
+#+begin_src emacs-lisp :tangle init.el
+(use-package ess)
+#+end_src
+
+*** CSV
+#+begin_src emacs-lisp :tangle init.el
+(use-package csv)
+(use-package csv-mode)
+#+end_src
+
+
+
