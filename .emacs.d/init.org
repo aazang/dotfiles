@@ -291,7 +291,7 @@ Evil mode needs undo-tree for undo capability
 ** Company
 #+begin_src emacs-lisp 
   (use-package company)
-  (global-company-mode t)
+  (global-company-mode)
 #+end_src
 
 ** Vertico 
@@ -327,7 +327,7 @@ Evil mode needs undo-tree for undo capability
 
 ** Completion Style
 #+begin_src emacs-lisp 
-(setq completion-styles '(orderless))
+(setq completion-styles '(flex))
 #+end_src
 
 ** Corfu
