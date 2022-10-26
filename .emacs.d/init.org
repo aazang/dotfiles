@@ -617,3 +617,8 @@ Evil mode needs undo-tree for undo capability
 
 
 
+
+*** Python
+#+begin_src emacs-lisp 
+(use-package ein)
+#+end_src
