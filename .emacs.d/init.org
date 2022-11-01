@@ -594,6 +594,18 @@ Evil mode needs undo-tree for undo capability
 #+end_src
 
 * Text Editing
+** Tree-sitter
+#+begin_src emacs-lisp 
+  (use-package tree-sitter
+    :ensure t
+    :after tree-sitter-langs
+    :config
+    (global-tree-sitter-mode)
+    (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+  (use-package tree-sitter-langs)
+  (use-package tree-sitter-indent)
+  (use-package evil-textobj-tree-sitter)
+#+end_src
 ** Paredit
 #+begin_src emacs-lisp 
 (use-package paredit)
@@ -646,21 +658,8 @@ Evil mode needs undo-tree for undo capability
 (use-package csv-mode)
 #+end_src
 
-
 *** Python
 #+begin_src emacs-lisp 
 (use-package ein)
 #+end_src
 
-** Tree-sitter
-#+begin_src emacs-lisp 
-  (use-package tree-sitter
-    :ensure t
-    :after tree-sitter-langs
-    :config
-    (global-tree-sitter-mode)
-    (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
-  (use-package tree-sitter-langs)
-  (use-package tree-sitter-indent)
-  (use-package evil-textobj-tree-sitter)
-#+end_src
