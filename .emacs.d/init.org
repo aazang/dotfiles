@@ -205,8 +205,9 @@
 Evil mode needs undo-tree for undo capability
 #+begin_src emacs-lisp 
   (use-package undo-tree)
-  (global-undo-tree-mode t)
+  (global-undo-tree-mode)
   (setq evil-undo-system 'undo-tree)
+  (add-hook 'evil-local-mode-hook 'turn-on-undo-tree-mode)
 #+end_src
 
 * Extending Path
@@ -608,9 +609,10 @@ Evil mode needs undo-tree for undo capability
 #+end_src
 ** Paredit
 #+begin_src emacs-lisp 
-(use-package paredit)
-(use-package evil-paredit)
-(use-package paredit-everywhere)
+  (use-package paredit)
+  (use-package evil-paredit)
+  (use-package paredit-everywhere)
+  (global-set-key (kbd "M-(") 'paredit-wrap-sexp)
 #+end_src
 
 ** eglot
@@ -660,6 +662,9 @@ Evil mode needs undo-tree for undo capability
 
 *** Python
 #+begin_src emacs-lisp 
-(use-package ein)
+  (use-package ein)
+  (setq ein:worksheet-enable-undo t)
+  (setq ein:output-area-inlined-images t)
+  (setq ein:slice-image t)
 #+end_src
 
