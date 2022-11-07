@@ -1,6 +1,7 @@
 #+TITLE: Emacs Configuration via Org-mode
 #+AUTHOR: Mario Baars
 #+PROPERTY: header-args :tangle "~/.emacs.d/init.el"
+#+STARTUP: overview
 
 * Decluttering
 ** UI-Decluttering
@@ -55,6 +56,28 @@
 #+end_src
 
 * Misc
+** Rainbow mode
+#+begin_src emacs-lisp 
+(use-package rainbow-mode)
+#+end_src
+
+** Browser fix
+#+begin_src emacs-lisp 
+  (setq browse-url-browser-function 'browse-url-firefox
+        browse-url-generic-program 'browse-url-firefox
+        browse-url-new-window-flag t 
+        browse-url-firefox-new-window-is-tab nil)
+  (setq browse-url-firefox-arguments '("-P" "test_profile" "-new-instance"))
+#+end_src
+
+** PDF tools
+#+begin_src emacs-lisp 
+  (use-package pdf-tools
+    :ensure t
+    :config 
+    (pdf-tools-install))
+#+end_src
+
 ** Which Key
 #+begin_src emacs-lisp  
   (use-package which-key
@@ -63,6 +86,11 @@
     :config
     (setq which-key-idle-delay 1)
     (setq which-key-min-display-lines 3))
+#+end_src
+
+** Recursive Minibuffers
+#+begin_src emacs-lisp 
+(setq enable-recursive-minibuffers t)
 #+end_src
 
 ** Stay keyboard driven
@@ -175,7 +203,7 @@
   (global-set-key (kbd "M-ä") 'dabbrev-expand)
   (global-set-key (kbd "C-x c") 'compile)
   (global-set-key (kbd "C-x 4 RET") 'vterm-other-window)
-  (global-set-key (kbd "C-M-i") 'completion-at-point)
+  (global-set-key (kbd "C-M-ä") 'completion-at-point)
 #+end_src
 
 ** No accidental quiting
@@ -418,6 +446,9 @@ Evil mode needs undo-tree for undo capability
 
   (setq dired-listing-switches "-alh1vGB --group-directories-first")
 
+  (use-package all-the-icons-dired
+    :hook (dired-mode . all-the-icons-dired-mode))
+
   ;; Dired plus
   (add-to-list 'load-path "~/.emacs.d/dired+.el")
 #+end_src
@@ -590,8 +621,8 @@ Evil mode needs undo-tree for undo capability
 
   (exwm-input-set-key (kbd "s-SPC") 'counsel-linux-app)
 
-  (setq exwm-layout-show-all-buffers t)
-  (setq exwm-workspace-show-all-buffers 1)
+  (setq exwm-layout-show-all-buffers nil)
+  (setq exwm-workspace-show-all-buffers nil)
 #+end_src
 
 * Text Editing
@@ -640,7 +671,7 @@ Evil mode needs undo-tree for undo capability
 (setq org-preview-latex-default-process 'dvipng)
 (setq-default TeX-master nil)
 (setq TeX-show-compilation nil)
-(use-package company-auctex)
+(setq TeX-electric-math nil)
 (use-package auto-complete-auctex)
 #+end_src>
 
