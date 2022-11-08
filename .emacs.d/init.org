@@ -204,6 +204,7 @@
   (global-set-key (kbd "C-x c") 'compile)
   (global-set-key (kbd "C-x 4 RET") 'vterm-other-window)
   (global-set-key (kbd "C-M-ä") 'completion-at-point)
+  (global-set-key (kbd "s-<return>") 'multi-vterm)
 #+end_src
 
 ** No accidental quiting
