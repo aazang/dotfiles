@@ -571,6 +571,8 @@ Evil mode needs undo-tree for undo capability
 #+begin_src emacs-lisp  
   (start-process-shell-command "xrandr" nil "")
 
+  (setq exwm-replace nil)
+
   (use-package exwm
     :config
     ;; Set the default number of workspaces
