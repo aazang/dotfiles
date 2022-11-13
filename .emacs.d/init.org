@@ -187,11 +187,6 @@
   (global-set-key (kbd "C-S-k") 'windmove-swap-states-up)
   (global-set-key (kbd "C-S-l") 'windmove-swap-states-right)
 
-  (global-set-key (kbd "s-h") 'windmove-left)
-  (global-set-key (kbd "s-j") 'windmove-down)
-  (global-set-key (kbd "s-k") 'windmove-up)
-  (global-set-key (kbd "s-l") 'windmove-right)
-
   (global-set-key (kbd "C-s-j") (lambda() (interactive) (shrink-window-horizontally 8)))
   (global-set-key (kbd "C-s-k") (lambda() (interactive) (enlarge-window-horizontally 8)))
   (global-set-key (kbd "C-s-+") (lambda() (interactive) (enlarge-window 4)))
