@@ -267,7 +267,7 @@ Evil mode needs undo-tree for undo capability
 ** Theme
 #+begin_src emacs-lisp  
 (use-package doom-themes)
-(load-theme 'doom-tokyo-night)
+(load-theme 'modus-vivendi)
 #+end_src
 
 ** Modeline
