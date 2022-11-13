@@ -67,7 +67,7 @@
         browse-url-generic-program 'browse-url-firefox
         browse-url-new-window-flag t 
         browse-url-firefox-new-window-is-tab nil)
-  (setq browse-url-firefox-arguments '("-P" "test_profile" "-new-instance"))
+  (setq browse-url-firefox-arguments nil)
 #+end_src
 
 ** PDF tools
@@ -587,6 +587,8 @@ Evil mode needs undo-tree for undo capability
 * EXWM
 #+begin_src emacs-lisp  
   (start-process-shell-command "xrandr" nil "")
+
+  (setq exwm-replace nil)
 
   (use-package exwm
     :config
