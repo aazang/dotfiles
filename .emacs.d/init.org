@@ -202,6 +202,7 @@
 #+begin_src emacs-lisp 
   (global-set-key (kbd "M-ä") 'dabbrev-expand)
   (global-set-key (kbd "C-x c") 'compile)
+  (global-set-key (kbd "C-x C-b") 'ibuffer)
   (global-set-key (kbd "C-x 4 RET") 'vterm-other-window)
   (global-set-key (kbd "C-M-ä") 'completion-at-point)
   (global-set-key (kbd "s-<return>") 'multi-vterm)
@@ -486,9 +487,9 @@ Evil mode needs undo-tree for undo capability
     "Header info for a emacs-org file."
     "Title: "
     "#+TITLE:" str " \n"
-    "#+AUTHOR: Your Name\n"
-    )
-  (global-set-key [C-c o s] 'org-skeleton)
+    "#+AUTHOR: Mario Baars\n")
+
+  (global-set-key (kbd "C-c o s") 'org-skeleton)
 
   (use-package org-bullets
     :after org
@@ -496,12 +497,28 @@ Evil mode needs undo-tree for undo capability
     :custom
     (org-bullets-bullet-list '("○" "●" "○" "●" "○" "●" "○")))
 
-  ;; Better src-blocks in org mode
   (with-eval-after-load 'org
     (require 'org-tempo)
-    (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+    ;; Structure templates
     (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp "))
-    (add-to-list 'org-structure-template-alist '("py" . "src python")))
+    (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+    (add-to-list 'org-structure-template-alist '("py" . "src python"))
+    (add-to-list 'org-structure-template-alist '("c++" . "src C++"))
+    ;; Org babel load languages
+    (org-babel-do-load-languages 
+     'org-babel-load-languages '((python . t) 
+                                 (C . t)
+                                 (shell . t))))
+
+  (require 'ox-latex)
+  (add-to-list 'org-latex-packages-alist '("" "minted"))
+  (setq org-latex-listings 'minted)
+
+  (setq org-latex-pdf-process
+        '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+          "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+          "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+
 #+end_src
 
 ** Org Roam
