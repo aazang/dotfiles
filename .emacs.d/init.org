@@ -135,6 +135,11 @@
   (recentf-mode 1)
 #+end_src
 
+** Desktop
+#+begin_src emacs-lisp 
+(desktop-save-mode 1)
+#+end_src
+
 ** Save-hist
 #+begin_src emacs-lisp 
   (setq history-length 30)
@@ -200,7 +205,7 @@
 
 ** Random Keybindings
 #+begin_src emacs-lisp 
-  (global-set-key (kbd "M-ä") 'dabbrev-expand)
+  (global-set-key (kbd "M-ä") 'hippie-expand)
   (global-set-key (kbd "C-x c") 'compile)
   (global-set-key (kbd "C-x C-b") 'ibuffer)
   (global-set-key (kbd "C-x 4 RET") 'vterm-other-window)
