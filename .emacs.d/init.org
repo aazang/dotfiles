@@ -208,6 +208,14 @@
 (global-unset-key "\C-x\C-c")
 #+end_src
 
+* Tab bar
+#+begin_src emacs-lisp 
+  (tab-bar-mode)
+  (setq tab-bar-new-tab-choice "*scratch*")
+  (setq tab-bar-close-button-show nil
+        tab-bar-new-button-show nil)
+#+end_src
+
 * Evil Mode
 #+begin_src emacs-lisp  
   (use-package evil
