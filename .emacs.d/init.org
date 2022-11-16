@@ -138,7 +138,7 @@
 ** Desktop
 #+begin_src emacs-lisp 
   (setq desktop-dirname "~/.emacs.d/desktop_saves")
-  (add-to-list 'desktop-path "~/.emacs.d/desktop_saves")
+  (setq desktop-path '("~/.emacs.d/desktop_saves"))
   (desktop-save-mode 1)
 #+end_src
 
