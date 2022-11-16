@@ -88,9 +88,9 @@
     (setq which-key-min-display-lines 3))
 #+end_src
 
-** Recursive Minibuffers
+** Minibuffers
 #+begin_src emacs-lisp 
-(setq enable-recursive-minibuffers t)
+  (setq enable-recursive-minibuffers t)
 #+end_src
 
 ** Stay keyboard driven
@@ -137,8 +137,10 @@
 
 ** Desktop
 #+begin_src emacs-lisp 
+  (setq desktop-path (list "~/.emacs.d/desktop_saves"))
   (setq desktop-dirname "~/.emacs.d/desktop_saves")
-  (setq desktop-path '("~/.emacs.d/desktop_saves"))
+  (setq desktop-restore-eager 5)
+  (setq desktop-load-locked-desktop t)
   (desktop-save-mode 1)
 #+end_src
 
@@ -179,11 +181,6 @@
 ** Easy closing *Help*
 #+begin_src emacs-lisp 
   (setq help-window-select t)
-#+end_src
-
-** Minibuffer Window Height
-#+begin_src emacs-lisp 
-(setq max-mini-window-height 0.10)
 #+end_src
 
 * Key bindings
@@ -282,7 +279,7 @@ Evil mode needs undo-tree for undo capability
 ** Theme
 #+begin_src emacs-lisp  
 (use-package doom-themes)
-(load-theme 'modus-vivendi)
+(load-theme 'doom-dark+)
 #+end_src
 
 ** Modeline
