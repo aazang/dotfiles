@@ -217,14 +217,6 @@
 (global-unset-key "\C-x\C-c")
 #+end_src
 
-* Tab bar
-#+begin_src emacs-lisp 
-  (tab-bar-mode)
-  (setq tab-bar-new-tab-choice "*scratch*")
-  (setq tab-bar-close-button-show nil
-        tab-bar-new-button-show nil)
-#+end_src
-
 * Evil Mode
 #+begin_src emacs-lisp  
   (use-package evil
@@ -250,6 +242,25 @@ Evil mode needs undo-tree for undo capability
   (global-undo-tree-mode)
   (setq evil-undo-system 'undo-tree)
   (add-hook 'evil-local-mode-hook 'turn-on-undo-tree-mode)
+#+end_src
+
+* Tab bar
+#+begin_src emacs-lisp 
+  (setq tab-bar-new-tab-choice "*scratch*")
+  (setq tab-bar-close-button-show nil
+        tab-bar-new-button-show nil)
+
+  (defun my/tab-bar-tab-name-project-formatter (project-path-string)
+    (nth (- (length (s-split "/" project-path-string)) 2) (s-split "/" project-path-string)))
+
+  (defun my/tab-bar-tab-name-function ()
+    (let ((project (project-current)))
+      (if project
+          (my/tab-bar-tab-name-project-formatter (project-root project))
+        (tab-bar-tab-name-current))))
+
+  (setq tab-bar-tab-name-function #'my/tab-bar-tab-name-function)
+  (tab-bar-mode 1)
 #+end_src
 
 * Extending Path
