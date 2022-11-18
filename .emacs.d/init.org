@@ -485,6 +485,8 @@ Evil mode needs undo-tree for undo capability
     (org-indent-mode)
     (visual-line-mode 1))
 
+  (setq org-format-latex-options (plist-put org-format-latex-options :scale 2.0))
+
   (defun org-font-setup ()
     ;; (font-lock-add-keywords 'org-mode
     ;; 			  '((" *\\([-]\\) "
