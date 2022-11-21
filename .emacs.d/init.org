@@ -212,9 +212,51 @@
   (global-set-key (kbd "s-<return>") 'multi-vterm)
 #+end_src
 
+** Enable keybindings
+#+begin_src emacs-lisp 
+(put 'narrow-to-region 'disabled nil)
+#+end_src
+
 ** No accidental quiting
 #+begin_src emacs-lisp 
 (global-unset-key "\C-x\C-c")
+#+end_src
+
+* Tab bar
+#+begin_src emacs-lisp 
+  (setq tab-bar-new-tab-choice "*scratch*")
+  (setq tab-bar-close-button-show nil
+        tab-bar-new-button-show nil)
+
+  (set-face-attribute 'tab-bar-tab t :inherit 'doom-modeline-panel :foreground nil :background nil)
+
+  (defun my/tab-bar-format (tab i)
+    (propertize
+     (format
+      (concat
+       (if (eq (car tab) 'current-tab)
+           "> " "")
+       "%s")
+      (alist-get 'name tab))
+     'face (list (append
+                  '(:foreground "#FFFFFF")
+                  (if (eq (car tab) 'current-tab)
+                      '(:box t)
+                    '())))))
+
+  (setq tab-bar-tab-name-format-function #'my/tab-bar-format)
+
+  (defun my/tab-bar-tab-name-project-formatter (project-path-string)
+    (nth (- (length (s-split "/" project-path-string)) 2) (s-split "/" project-path-string)))
+
+  (defun my/tab-bar-tab-name-function ()
+    (let ((project (project-current)))
+      (if project
+          (my/tab-bar-tab-name-project-formatter (project-root project))
+        (tab-bar-tab-name-current))))
+
+  (setq tab-bar-tab-name-function #'my/tab-bar-tab-name-function)
+  (tab-bar-mode 1)
 #+end_src
 
 * Evil Mode
@@ -242,25 +284,6 @@ Evil mode needs undo-tree for undo capability
   (global-undo-tree-mode)
   (setq evil-undo-system 'undo-tree)
   (add-hook 'evil-local-mode-hook 'turn-on-undo-tree-mode)
-#+end_src
-
-* Tab bar
-#+begin_src emacs-lisp 
-  (setq tab-bar-new-tab-choice "*scratch*")
-  (setq tab-bar-close-button-show nil
-        tab-bar-new-button-show nil)
-
-  (defun my/tab-bar-tab-name-project-formatter (project-path-string)
-    (nth (- (length (s-split "/" project-path-string)) 2) (s-split "/" project-path-string)))
-
-  (defun my/tab-bar-tab-name-function ()
-    (let ((project (project-current)))
-      (if project
-          (my/tab-bar-tab-name-project-formatter (project-root project))
-        (tab-bar-tab-name-current))))
-
-  (setq tab-bar-tab-name-function #'my/tab-bar-tab-name-function)
-  (tab-bar-mode 1)
 #+end_src
 
 * Extending Path
@@ -485,8 +508,6 @@ Evil mode needs undo-tree for undo capability
     (org-indent-mode)
     (visual-line-mode 1))
 
-  (setq org-format-latex-options (plist-put org-format-latex-options :scale 2.0))
-
   (defun org-font-setup ()
     ;; (font-lock-add-keywords 'org-mode
     ;; 			  '((" *\\([-]\\) "
@@ -683,6 +704,7 @@ Evil mode needs undo-tree for undo capability
   (use-package tree-sitter-indent)
   (use-package evil-textobj-tree-sitter)
 #+end_src
+
 ** Paredit
 #+begin_src emacs-lisp 
   (use-package paredit)
@@ -707,16 +729,17 @@ Evil mode needs undo-tree for undo capability
 *** Latex
 #+begin_src emacs-lisp  
 (use-package latex
-  :ensure auctex
-  :config
-  (setq TeX-auto-save t)
-  (setq TeX-parse-self t))
+  :ensure auctex)
+
+(setq TeX-auto-save t)
+(setq TeX-parse-self t)
 
 (setq org-format-latex-options (plist-put org-format-latex-options :scale 2.4))
 (setq org-preview-latex-default-process 'dvipng)
 (setq-default TeX-master nil)
 (setq TeX-show-compilation nil)
-(setq TeX-electric-math nil)
+(setq TeX-electric-math t)
+(setq Tex-insert-braces t)
 (use-package auto-complete-auctex)
 #+end_src>
 
