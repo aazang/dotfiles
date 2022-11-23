@@ -297,8 +297,8 @@ Evil mode needs undo-tree for undo capability
   (defvar default-font-size 200)
 
   (defun set-font-faces()
-    (set-face-attribute 'default nil :font "Ubuntu Mono" :weight 'light :height default-font-size)
-    (set-face-attribute 'fixed-pitch nil :font "Ubuntu Mono" :weight 'light :height default-font-size)
+    (set-face-attribute 'default nil :font "Iosevka Nerd Font Mono" :weight 'light :height default-font-size)
+    (set-face-attribute 'fixed-pitch nil :font "Iosevka Nerd Font Mono" :weight 'light :height default-font-size)
     (set-face-attribute 'variable-pitch nil :font "Noto Sans" :weight 'normal :height default-font-size))
 
   (if (daemonp)
@@ -312,8 +312,9 @@ Evil mode needs undo-tree for undo capability
 
 ** Theme
 #+begin_src emacs-lisp  
-(use-package doom-themes)
-(load-theme 'doom-dark+)
+(use-package ubuntu-theme)
+  (use-package doom-themes)
+  (load-theme 'doom-dark+)
 #+end_src
 
 ** Modeline
