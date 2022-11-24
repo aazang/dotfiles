@@ -137,9 +137,11 @@
 
 ** Desktop
 #+begin_src emacs-lisp 
-  (setq desktop-path (list "~/.emacs.d/desktop_saves"))
   (setq desktop-dirname "~/.emacs.d/desktop_saves")
+  (setq desktop-path (list desktop-dirname))
   (setq desktop-restore-eager 5)
+  (setq desktop-files-not-to-save "^$")
+  (setq desktop-save t)
   (setq desktop-load-locked-desktop t)
   (desktop-save-mode 1)
 #+end_src
@@ -693,6 +695,14 @@ Evil mode needs undo-tree for undo capability
 #+end_src
 
 * Text Editing
+** Misc Modes
+#+begin_src emacs-lisp 
+  (use-package csv)
+  (use-package csv-mode)
+  (use-package yaml-mode)
+  (use-package markdown-mode)
+#+end_src
+
 ** Tree-sitter
 #+begin_src emacs-lisp 
   (use-package tree-sitter
@@ -754,12 +764,6 @@ Evil mode needs undo-tree for undo capability
 *** ESS
 #+begin_src emacs-lisp 
 (use-package ess)
-#+end_src
-
-*** CSV
-#+begin_src emacs-lisp 
-(use-package csv)
-(use-package csv-mode)
 #+end_src
 
 *** Python
