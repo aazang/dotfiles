@@ -690,7 +690,7 @@ Evil mode needs undo-tree for undo capability
   (use-package csv)
   (use-package csv-mode)
   (use-package yaml-mode)
-  (use-package markdown-mode)
+  ;; (use-package markdown-mode)
 #+end_src
 
 ** Tree-sitter
