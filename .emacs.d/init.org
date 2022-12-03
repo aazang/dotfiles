@@ -122,6 +122,11 @@
 (when (fboundp 'electric-indent-mode) (electric-indent-mode -1))
 #+end_src
 
+** Native comp
+#+begin_src emacs-lisp 
+  (setq native-comp-async-report-warnings-errors nil)
+#+end_src
+
 ** Scrolling
 #+begin_src emacs-lisp  
 (setq auto-window-vscroll nil)
@@ -273,10 +278,15 @@
 ** Undo-Tree
 Evil mode needs undo-tree for undo capability
 #+begin_src emacs-lisp 
-  (use-package undo-tree)
-  (global-undo-tree-mode)
-  (setq evil-undo-system 'undo-tree)
-  (add-hook 'evil-local-mode-hook 'turn-on-undo-tree-mode)
+  (use-package undo-tree
+    :ensure t
+    :after evil
+    :diminish
+    :config
+    (evil-set-undo-system 'undo-tree)
+    (global-undo-tree-mode 1))
+  (setq undo-tree-enable-undo-in-region 1)
+  (setq evil-want-fine-undo t)
 #+end_src
 
 * Extending Path
