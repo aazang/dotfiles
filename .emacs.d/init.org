@@ -115,6 +115,7 @@
     (setq mini-frame-ignore-commands
           (append mini-frame-ignore-commands
                   '(evil-window-split evil-window-vsplit evil-ex)))
+    (mini-frame-mode)
 #+end_src
 
 ** Stay keyboard driven
