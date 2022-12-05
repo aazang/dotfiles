@@ -88,10 +88,33 @@
     (setq which-key-min-display-lines 3))
 #+end_src
 
-** Minibuffers
+** Minibuffer
 #+begin_src emacs-lisp 
   (setq enable-recursive-minibuffers t)
   (setq max-mini-window-height 0.35)
+
+  #+end_src
+
+** Mini-frame
+  #+begin_src emacs-lisp 
+    (use-package mini-frame
+      :custom
+      (x-gtk-resize-child-frames 'resize-mod)
+      (mini-frame-resize nil))
+
+    (setq mini-frame-show-parameters
+          '((left . 0.5)
+            (top . 0.5)
+            (height . 10)
+            (width . 0.4)))
+
+    (setq mini-frame-color-shift-step 0)
+    (setq mini-frame-detach-on-hide nil)
+    (setq mini-frame-standalone 't)
+    (setq mini-frame-resize-min-height 10)
+    (setq mini-frame-ignore-commands
+          (append mini-frame-ignore-commands
+                  '(evil-window-split evil-window-vsplit evil-ex)))
 #+end_src
 
 ** Stay keyboard driven
