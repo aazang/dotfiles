@@ -105,8 +105,8 @@
     (setq mini-frame-show-parameters
           '((left . 0.5)
             (top . 0.5)
-            (height . 10)
-            (width . 0.4)))
+            (height . 12)
+            (width . 0.5)))
 
     (setq mini-frame-color-shift-step 0)
     (setq mini-frame-detach-on-hide nil)
