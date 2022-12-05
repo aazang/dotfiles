@@ -104,7 +104,7 @@
 
     (setq mini-frame-show-parameters
           '((left . 0.5)
-            (top . 0.5)
+            (top . 0.7)
             (height . 12)
             (width . 0.5)))
 
