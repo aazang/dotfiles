@@ -95,29 +95,6 @@
 
   #+end_src
 
-** Mini-frame
-  #+begin_src emacs-lisp 
-    (use-package mini-frame
-      :custom
-      (x-gtk-resize-child-frames 'resize-mod)
-      (mini-frame-resize nil))
-
-    (setq mini-frame-show-parameters
-          '((left . 0.5)
-            (top . 0.7)
-            (height . 12)
-            (width . 0.5)))
-
-    (setq mini-frame-color-shift-step 0)
-    (setq mini-frame-detach-on-hide nil)
-    (setq mini-frame-standalone 't)
-    (setq mini-frame-resize-min-height 10)
-    (setq mini-frame-ignore-commands
-          (append mini-frame-ignore-commands
-                  '(evil-window-split evil-window-vsplit evil-ex)))
-    (mini-frame-mode)
-#+end_src
-
 ** Stay keyboard driven
 #+begin_src emacs-lisp 
 (setq use-dialog-box nil)
@@ -215,15 +192,53 @@
   (setq help-window-select t)
 #+end_src
 
-* Key bindings
-** Window manipulation
+* My Custom Functions
 #+begin_src emacs-lisp 
-  (global-set-key (kbd "C-s-j") (lambda() (interactive) (shrink-window-horizontally 8)))
-  (global-set-key (kbd "C-s-k") (lambda() (interactive) (enlarge-window-horizontally 8)))
-  (global-set-key (kbd "C-s-+") (lambda() (interactive) (enlarge-window 4)))
-  (global-set-key (kbd "C-s--") (lambda() (interactive) (shrink-window 4)))
+  (defun my/evil-search-next ()
+    (interactive)  
+    (evil-search-next)
+    (recenter))
+
+  (defun my/evil-search-previous ()
+    (interactive)  
+    (evil-search-previous)
+    (recenter))
+
+  (defun my/evil-scroll-down ()
+    (interactive)
+    (evil-scroll-down 0)
+    (recenter))
+
+  (defun my/evil-scroll-up ()
+    (interactive)
+    (evil-scroll-up 0)
+    (recenter))
+
+  (defun my/tab-bar-format (tab i)
+    (propertize
+     (format
+      (concat
+       (if (eq (car tab) 'current-tab)
+           "> " "")
+       "%s")
+      (alist-get 'name tab))
+     'face (list (append
+                  '(:foreground "#FFFFFF")
+                  (if (eq (car tab) 'current-tab)
+                      '(:box t)
+                    '())))))
+
+  (defun my/tab-bar-tab-name-project-formatter (project-path-string)
+    (nth (- (length (s-split "/" project-path-string)) 2) (s-split "/" project-path-string)))
+
+  (defun my/tab-bar-tab-name-function ()
+    (let ((project (project-current)))
+      (if project
+          (my/tab-bar-tab-name-project-formatter (project-root project))
+        (tab-bar-tab-name-current))))
 #+end_src
 
+* Key bindings
 ** Random Keybindings
 #+begin_src emacs-lisp 
   (global-set-key (kbd "M-ä") 'hippie-expand)
@@ -232,6 +247,14 @@
   (global-set-key (kbd "C-x 4 RET") 'vterm-other-window)
   (global-set-key (kbd "C-M-ä") 'completion-at-point)
   (global-set-key (kbd "s-<return>") 'multi-vterm)
+  (global-set-key (kbd "M-v") #'my/evil-scroll-up)
+#+end_src
+
+** Change Evil keybindings
+#+begin_src emacs-lisp 
+  (define-key evil-normal-state-map (kbd "n") #'my/evil-search-next)
+  (define-key evil-normal-state-map (kbd "N") #'my/evil-search-previous)
+  (define-key evil-motion-state-map (kbd "C-d") #'my/evil-scroll-down)
 #+end_src
 
 ** Enable keybindings
@@ -249,34 +272,8 @@
   (setq tab-bar-new-tab-choice "*scratch*")
   (setq tab-bar-close-button-show nil
         tab-bar-new-button-show nil)
-
   (set-face-attribute 'tab-bar-tab t :inherit 'doom-modeline-panel :foreground nil :background nil)
-
-  (defun my/tab-bar-format (tab i)
-    (propertize
-     (format
-      (concat
-       (if (eq (car tab) 'current-tab)
-           "> " "")
-       "%s")
-      (alist-get 'name tab))
-     'face (list (append
-                  '(:foreground "#FFFFFF")
-                  (if (eq (car tab) 'current-tab)
-                      '(:box t)
-                    '())))))
-
   (setq tab-bar-tab-name-format-function #'my/tab-bar-format)
-
-  (defun my/tab-bar-tab-name-project-formatter (project-path-string)
-    (nth (- (length (s-split "/" project-path-string)) 2) (s-split "/" project-path-string)))
-
-  (defun my/tab-bar-tab-name-function ()
-    (let ((project (project-current)))
-      (if project
-          (my/tab-bar-tab-name-project-formatter (project-root project))
-        (tab-bar-tab-name-current))))
-
   (setq tab-bar-tab-name-function #'my/tab-bar-tab-name-function)
   (tab-bar-mode 1)
 #+end_src
@@ -321,7 +318,7 @@ Evil mode needs undo-tree for undo capability
 * Appearance
 ** Font
 #+begin_src emacs-lisp  
-  (defvar default-font-size 200)
+  (defvar default-font-size 170)
 
   (defun set-font-faces()
     (set-face-attribute 'default nil :font "Iosevka Nerd Font Mono" :weight 'light :height default-font-size)
@@ -339,9 +336,8 @@ Evil mode needs undo-tree for undo capability
 
 ** Theme
 #+begin_src emacs-lisp  
-(use-package ubuntu-theme)
   (use-package doom-themes)
-  (load-theme 'doom-dark+)
+  (load-theme 'doom-one)
 #+end_src
 
 ** Modeline
@@ -531,34 +527,22 @@ Evil mode needs undo-tree for undo capability
 * Org mode
 ** Basic Org mode setup
 #+begin_src emacs-lisp  
-  (defun org-mode-setup ()
-    (org-indent-mode)
-    (visual-line-mode 1))
-
-  (defun org-font-setup ()
-    ;; (font-lock-add-keywords 'org-mode
-    ;; 			  '((" *\\([-]\\) "
-    ;; 			     (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
-    (font-lock-add-keywords 'org-mode
-                            '(("^ *\\(-->\\) "
-                               (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "→")))))))
-
   (use-package org
     :hook (org-mode . org-mode-setup)
     :config
-    (setq org-agenda-files '("~/OrgFiles/Studium.org"
-                             "~/OrgFiles/Personal.org"
-                             "~/OrgFiles/Termine.org"))
-    (org-font-setup))
+    (setq org-agenda-files '("~/org/Notes.org")))
 
   (setq org-agenda-sorting-strategy '((agenda habit-down time-up ts-up
                                               priority-down category-keep)
                                       (todo priority-down category-keep)
                                       (tags priority-down category-keep)
                                       (search category-keep)))
+  (defun org-mode-setup ()
+    (org-indent-mode)
+    (visual-line-mode 1))
+
   (define-skeleton org-skeleton
     "Header info for a emacs-org file."
-    "Title: "
     "#+TITLE:" str " \n"
     "#+AUTHOR: Mario Baars\n")
 
@@ -566,9 +550,7 @@ Evil mode needs undo-tree for undo capability
 
   (use-package org-bullets
     :after org
-    :hook (org-mode . org-bullets-mode)
-    :custom
-    (org-bullets-bullet-list '("○" "●" "○" "●" "○" "●" "○")))
+    :hook (org-mode . org-bullets-mode))
 
   (with-eval-after-load 'org
     (require 'org-tempo)
@@ -592,6 +574,13 @@ Evil mode needs undo-tree for undo capability
           "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
           "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
 
+  (setq org-default-notes-file (concat org-directory "/Notes.org"))
+
+  (setq org-capture-templates
+        '(("c" "Code" entry (file+headline "" "Code")
+           "* TODO %?\n  %u\n  %a")
+          ("t" "Task" entry (file+headline "" "Tasks")
+           "* TODO %?\n  %u\n  %a")))
 #+end_src
 
 ** Org Roam
@@ -755,9 +744,13 @@ Evil mode needs undo-tree for undo capability
 
 ** Eldoc
 #+begin_src emacs-lisp 
+  (use-package eldoc-box)
   (setq eldoc-echo-area-prefer-doc-buffer t)
   (setq eldoc-echo-area-use-mulitline-p nil)
-  (global-eldoc-mode 1)
+  (global-eldoc-mode t)
+  (add-hook 'eldoc-mode-hook
+            'eldoc-box-hover-mode)
+  (global-set-key (kbd "C-h D") #'eldoc-box-help-at-point)
 #+end_src
 
 ** Languages
@@ -798,3 +791,7 @@ Evil mode needs undo-tree for undo capability
   (setq ein:slice-image t)
 #+end_src
 
+
+
+
+0
