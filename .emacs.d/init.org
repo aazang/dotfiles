@@ -250,11 +250,31 @@
   (global-set-key (kbd "M-v") #'my/evil-scroll-up)
 #+end_src
 
-** Change Evil keybindings
+** Evil keybindings
 #+begin_src emacs-lisp 
-  (define-key evil-normal-state-map (kbd "n") #'my/evil-search-next)
-  (define-key evil-normal-state-map (kbd "N") #'my/evil-search-previous)
-  (define-key evil-motion-state-map (kbd "C-d") #'my/evil-scroll-down)
+  ;; Changing default keybindings
+  (with-eval-after-load 'evil-maps
+    (define-key evil-normal-state-map (kbd "n") #'my/evil-search-next)
+    (define-key evil-normal-state-map (kbd "N") #'my/evil-search-previous)
+    (define-key evil-normal-state-map (kbd "C-d") #'my/evil-scroll-down))
+
+  ;; evil-textobj-tree-sitter keybindings
+  (with-eval-after-load 'evil-maps
+    (define-key evil-outer-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.outer"))
+    (define-key evil-inner-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.inner"))
+    (define-key evil-outer-text-objects-map "a" (evil-textobj-tree-sitter-get-textobj ("conditional.outer" "loop.outer")))
+    (define-key evil-normal-state-map (kbd "]f") (lambda ()
+                                                   (interactive)
+                                                   (evil-textobj-tree-sitter-goto-textobj "function.outer")))
+    (define-key evil-normal-state-map (kbd "[f") (lambda ()
+                                                   (interactive)
+                                                   (evil-textobj-tree-sitter-goto-textobj "function.outer" t)))
+    (define-key evil-normal-state-map (kbd "]F") (lambda ()
+                                                   (interactive)
+                                                   (evil-textobj-tree-sitter-goto-textobj "function.outer" nil t)))
+    (define-key evil-normal-state-map (kbd "[F") (lambda ()
+                                                   (interactive)
+                                                   (evil-textobj-tree-sitter-goto-textobj "function.outer" t t))))
 #+end_src
 
 ** Enable keybindings
@@ -281,17 +301,19 @@
 * Evil Mode
 #+begin_src emacs-lisp  
   (use-package evil
-      :ensure t
-      :init
-      (setq evil-want-keybinding nil)
-      :config
-      (evil-mode t))
+    :ensure t
+    :init
+    (setq evil-want-keybinding nil)
+    :config
+    (evil-mode t))
 
   (use-package evil-collection
-      :after evil
-      :ensure t
-      :config
-      (evil-collection-init))
+    :after evil
+    :ensure t
+    :config
+    (evil-collection-init))
+
+  (use-package evil-textobj-tree-sitter)  
 
   (setq evil-want-minibuffer t)
 #+end_src
