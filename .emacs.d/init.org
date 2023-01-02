@@ -55,10 +55,49 @@
 (setq use-package-always-ensure 't)
 #+end_src
 
+* Evil Mode
+#+begin_src emacs-lisp  
+  (use-package evil
+    :ensure t
+    :init
+    (setq evil-want-keybinding nil)
+    :config
+    (evil-mode t))
+
+  (use-package evil-collection
+    :after evil
+    :ensure t
+    :config
+    (evil-collection-init))
+
+  (use-package evil-textobj-tree-sitter)  
+
+  (setq evil-want-minibuffer t)
+#+end_src
+
+** Undo-Tree
+Evil mode needs undo-tree for undo capability
+#+begin_src emacs-lisp 
+  (use-package undo-tree
+    :ensure t
+    :after evil
+    :diminish
+    :config
+    (evil-set-undo-system 'undo-tree)
+    (global-undo-tree-mode 1))
+  (setq undo-tree-enable-undo-in-region 1)
+  (setq evil-want-fine-undo t)
+#+end_src
+
 * Misc
 ** Rainbow mode
 #+begin_src emacs-lisp 
 (use-package rainbow-mode)
+#+end_src
+
+** Ediff
+#+begin_src emacs-lisp 
+  (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 #+end_src
 
 ** Browser fix
@@ -214,23 +253,23 @@
     (evil-scroll-up 0)
     (recenter))
 
-  (defun my/tab-bar-format (tab i)
-    (propertize
-     (format
-      (concat
-       (if (eq (car tab) 'current-tab)
-           "> " "")
-       "%s")
-      (alist-get 'name tab))
-     'face (list (append
-                  '(:foreground "#FFFFFF")
-                  (if (eq (car tab) 'current-tab)
-                      '(:box t)
-                    '())))))
+  ;; (defun my/tab-bar-format (tab i)
+  ;;   (propertize
+  ;;    (format
+  ;;     (concat
+  ;;      (if (eq (car tab) 'current-tab)
+  ;;          "> " "")
+  ;;      "%s")
+  ;;     (alist-get 'name tab))
+  ;;    'face (list (append
+  ;;                 '(:foreground "#grey")
+  ;;                 (if (eq (car tab) 'current-tab)
+  ;;                     '(:box t)
+  ;;                   '())))))
 
   (defun my/tab-bar-tab-name-project-formatter (project-path-string)
     (nth (- (length (s-split "/" project-path-string)) 2) (s-split "/" project-path-string)))
-
+  ;; 
   (defun my/tab-bar-tab-name-function ()
     (let ((project (project-current)))
       (if project
@@ -238,15 +277,16 @@
         (tab-bar-tab-name-current))))
 #+end_src
 
-* Key bindings
+* Key Bindings
 ** Random Keybindings
 #+begin_src emacs-lisp 
+  ()
   (global-set-key (kbd "M-ä") 'hippie-expand)
   (global-set-key (kbd "C-x c") 'compile)
   (global-set-key (kbd "C-x C-b") 'ibuffer)
   (global-set-key (kbd "C-x 4 RET") 'vterm-other-window)
   (global-set-key (kbd "C-M-ä") 'completion-at-point)
-  (global-set-key (kbd "s-<return>") 'multi-vterm)
+  (global-set-key (kbd "C-x RET RET") 'multi-vterm)
   (global-set-key (kbd "M-v") #'my/evil-scroll-up)
 #+end_src
 
@@ -292,44 +332,11 @@
   (setq tab-bar-new-tab-choice "*scratch*")
   (setq tab-bar-close-button-show nil
         tab-bar-new-button-show nil)
-  (set-face-attribute 'tab-bar-tab t :inherit 'doom-modeline-panel :foreground nil :background nil)
-  (setq tab-bar-tab-name-format-function #'my/tab-bar-format)
+  (custom-set-faces '(tab-bar ((t (:background "#222235"))))
+                    '(tab-bar-tab ((t (:foreground "#b8c0d4" ))))
+                    '(tab-bar-tab-inactive ((t (:background  "#111111" :foreground "#ffffff")))))
   (setq tab-bar-tab-name-function #'my/tab-bar-tab-name-function)
   (tab-bar-mode 1)
-#+end_src
-
-* Evil Mode
-#+begin_src emacs-lisp  
-  (use-package evil
-    :ensure t
-    :init
-    (setq evil-want-keybinding nil)
-    :config
-    (evil-mode t))
-
-  (use-package evil-collection
-    :after evil
-    :ensure t
-    :config
-    (evil-collection-init))
-
-  (use-package evil-textobj-tree-sitter)  
-
-  (setq evil-want-minibuffer t)
-#+end_src
-
-** Undo-Tree
-Evil mode needs undo-tree for undo capability
-#+begin_src emacs-lisp 
-  (use-package undo-tree
-    :ensure t
-    :after evil
-    :diminish
-    :config
-    (evil-set-undo-system 'undo-tree)
-    (global-undo-tree-mode 1))
-  (setq undo-tree-enable-undo-in-region 1)
-  (setq evil-want-fine-undo t)
 #+end_src
 
 * Extending Path
@@ -343,8 +350,8 @@ Evil mode needs undo-tree for undo capability
   (defvar default-font-size 170)
 
   (defun set-font-faces()
-    (set-face-attribute 'default nil :font "Iosevka Nerd Font Mono" :weight 'light :height default-font-size)
-    (set-face-attribute 'fixed-pitch nil :font "Iosevka Nerd Font Mono" :weight 'light :height default-font-size)
+    (set-face-attribute 'default nil :font "Ubuntu Mono" :weight 'light :height default-font-size)
+    (set-face-attribute 'fixed-pitch nil :font "Ubuntu Mono" :weight 'light :height default-font-size)
     (set-face-attribute 'variable-pitch nil :font "Noto Sans" :weight 'normal :height default-font-size))
 
   (if (daemonp)
@@ -359,7 +366,8 @@ Evil mode needs undo-tree for undo capability
 ** Theme
 #+begin_src emacs-lisp  
   (use-package doom-themes)
-  (load-theme 'doom-tokyo-night)
+  (use-package sweet-theme)
+  (load-theme 'sweet)
 #+end_src
 
 ** Modeline
@@ -407,6 +415,7 @@ Evil mode needs undo-tree for undo capability
      ("M-s G" . consult-git-grep)
      ("M-s r" . consult-ripgrep)
      ("M-s l" . consult-line)
+     ("M-s i" . consult-imenu)
      ("M-s L" . consult-line-multi)
      ("M-s m" . consult-multi-occur)
      ("M-s k" . consult-keep-lines)
@@ -773,9 +782,14 @@ Evil mode needs undo-tree for undo capability
   (add-hook 'eldoc-mode-hook
             'eldoc-box-hover-mode)
   (global-set-key (kbd "C-h D") #'eldoc-box-help-at-point)
+  (setq eldoc-box-position-function #'eldoc-box--default-at-point-position-function)
 #+end_src
 
 ** Languages
+*** C/C++
+#+begin_src emacs-lisp 
+  (setq-default c-basic-offset 4)
+#+end_src
 *** Latex
 #+begin_src emacs-lisp  
 (use-package latex
@@ -817,3 +831,12 @@ Evil mode needs undo-tree for undo capability
 
 
 0
+
+** Misc
+#+begin_src emacs-lisp 
+  (add-hook 'log-edit-hook (lambda () (flyspell-mode 1)))
+  (setq show-paren-style 'expression)
+  (set-face-attribute 'show-paren-match nil :weight 'extra-bold)
+  (setq compilation-ask-about-save nil
+        compilation-always-kill t)
+#+end_src
