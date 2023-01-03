@@ -253,19 +253,19 @@ Evil mode needs undo-tree for undo capability
     (evil-scroll-up 0)
     (recenter))
 
-  ;; (defun my/tab-bar-format (tab i)
-  ;;   (propertize
-  ;;    (format
-  ;;     (concat
-  ;;      (if (eq (car tab) 'current-tab)
-  ;;          "> " "")
-  ;;      "%s")
-  ;;     (alist-get 'name tab))
-  ;;    'face (list (append
-  ;;                 '(:foreground "#grey")
-  ;;                 (if (eq (car tab) 'current-tab)
-  ;;                     '(:box t)
-  ;;                   '())))))
+  (defun my/tab-bar-format (tab i)
+    (propertize
+     (format
+      (concat
+       (if (eq (car tab) 'current-tab)
+           "> " "")
+       "%s")
+      (alist-get 'name tab))
+     'face (list (append
+                  '(:foreground "#grey")
+                  (if (eq (car tab) 'current-tab)
+                      '(:box t)
+                    '())))))
 
   (defun my/tab-bar-tab-name-project-formatter (project-path-string)
     (nth (- (length (s-split "/" project-path-string)) 2) (s-split "/" project-path-string)))
@@ -278,9 +278,20 @@ Evil mode needs undo-tree for undo capability
 #+end_src
 
 * Key Bindings
+** Disable Keybindings
+#+begin_src emacs-lisp 
+  (global-unset-key "\C-z")
+  (put 'evil-emacs-state 'disabled t)
+  (global-unset-key "\C-x\C-c")
+#+end_src
+
+** Enable keybindings
+#+begin_src emacs-lisp 
+(put 'narrow-to-region 'disabled nil)
+#+end_src
+
 ** Random Keybindings
 #+begin_src emacs-lisp 
-  ()
   (global-set-key (kbd "M-ä") 'hippie-expand)
   (global-set-key (kbd "C-x c") 'compile)
   (global-set-key (kbd "C-x C-b") 'ibuffer)
@@ -317,24 +328,14 @@ Evil mode needs undo-tree for undo capability
                                                    (evil-textobj-tree-sitter-goto-textobj "function.outer" t t))))
 #+end_src
 
-** Enable keybindings
-#+begin_src emacs-lisp 
-(put 'narrow-to-region 'disabled nil)
-#+end_src
-
-** No accidental quiting
-#+begin_src emacs-lisp 
-(global-unset-key "\C-x\C-c")
-#+end_src
-
 * Tab bar
 #+begin_src emacs-lisp 
   (setq tab-bar-new-tab-choice "*scratch*")
   (setq tab-bar-close-button-show nil
         tab-bar-new-button-show nil)
-  (custom-set-faces '(tab-bar ((t (:background "#222235"))))
-                    '(tab-bar-tab ((t (:foreground "#b8c0d4" ))))
-                    '(tab-bar-tab-inactive ((t (:background  "#111111" :foreground "#ffffff")))))
+  (custom-set-faces '(tab-bar ((t (:background "#13131e"))))
+                    '(tab-bar-tab ((t (:foreground "#ffffff" :background "#222235"))))
+                    '(tab-bar-tab-inactive ((t (:background  "#222235" :foreground "#b8c0d4")))))
   (setq tab-bar-tab-name-function #'my/tab-bar-tab-name-function)
   (tab-bar-mode 1)
 #+end_src
@@ -490,6 +491,42 @@ Evil mode needs undo-tree for undo capability
     :ensure t
     :init
     (savehist-mode))
+#+end_src
+
+** Cape
+#+begin_src emacs-lisp 
+  (use-package cape
+    ;; Bind dedicated completion commands
+    ;; Alternative prefix keys: C-c p, M-p, M-+, ...
+    :bind (("M-ö p" . completion-at-point) ;; capf
+           ("M-ö t" . complete-tag)        ;; etags
+           ("M-ö d" . cape-dabbrev)        ;; or dabbrev-completion
+           ("M-ö h" . cape-history)
+           ("M-ö f" . cape-file)
+           ("M-ö k" . cape-keyword)
+           ("M-ö s" . cape-symbol)
+           ("M-ö a" . cape-abbrev)
+           ("M-ö i" . cape-ispell)
+           ("M-ö l" . cape-line)
+           ("M-ö w" . cape-dict)
+           ("M-ö _" . cape-tex)
+           ("M-ö &" . cape-sgml)
+           ("M-ö r" . cape-rfc1345))
+    :init
+    ;; Add `completion-at-point-functions', used by `completion-at-point'.
+    (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+    (add-to-list 'completion-at-point-functions #'cape-file)
+    (add-to-list 'completion-at-point-functions #'cape-history)
+    (add-to-list 'completion-at-point-functions #'cape-keyword)
+    (add-to-list 'completion-at-point-functions #'cape-tex)
+    (add-to-list 'completion-at-point-functions #'cape-sgml)
+    (add-to-list 'completion-at-point-functions #'cape-rfc1345)
+    (add-to-list 'completion-at-point-functions #'cape-abbrev)
+    (add-to-list 'completion-at-point-functions #'cape-ispell)
+    (add-to-list 'completion-at-point-functions #'cape-dict)
+    (add-to-list 'completion-at-point-functions #'cape-symbol)
+    (add-to-list 'completion-at-point-functions #'cape-line)
+  )
 #+end_src
 
 ** Orderless
