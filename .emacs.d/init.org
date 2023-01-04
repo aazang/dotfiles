@@ -334,7 +334,7 @@ Evil mode needs undo-tree for undo capability
   (setq tab-bar-close-button-show nil
         tab-bar-new-button-show nil)
   (custom-set-faces '(tab-bar ((t (:background "#13131e"))))
-                    '(tab-bar-tab ((t (:foreground "#ffffff" :background "#222235"))))
+                    '(tab-bar-tab ((t (:foreground "#fc1c5b" :background "#222235"))))
                     '(tab-bar-tab-inactive ((t (:background  "#222235" :foreground "#b8c0d4")))))
   (setq tab-bar-tab-name-function #'my/tab-bar-tab-name-function)
   (tab-bar-mode 1)
